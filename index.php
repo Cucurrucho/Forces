@@ -10,26 +10,61 @@
 </head>
 <body>
 <?php
-$servername = "localhost";
-$username = "Adam";
-$password = "queseyo";
-$dbname = "forces";
+class Db {
 
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
+    private $conn;
 
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+    function __construct($par1, $par2, $par3, $par4)
+    {
+
+        $this->conn = new mysqli($par1, $par2, $par3, $par4);
+
+        if ($this->conn->connect_error) {?>
+            <div class="alert alert-warning" role="alert">
+                <strong>Failed Connection</strong>
+            </div>
+            <?php
+        }
+        else {?>
+            <div class="alert alert-success" role="alert">
+                <strong>Connected!</strong>
+            </div>
+            <?php
+        }
+    }
+
+    function db_insert_player () {
+        $name = $_POST['player'];
+        $attack = $_POST['attack'];
+        $defense = $_POST['defense'];
+        $stamina = $_POST['stamina'];
+
+        $sql = "INSERT INTO players (Name, Attack, Defense, Stamina)
+    VALUES ('$name', '$attack', '$defense', '$stamina')";
+
+        if ($this->conn->query($sql) === TRUE) {?>
+            <div class="alert alert-success" role="alert">
+                <strong>Player Added</strong>
+            </div>
+            <?php
+        }
+        else {?>
+            <div class="alert alert-warning" role="alert">
+                <strong>Failed adding player!</strong>
+            </div>
+            <?php
+        }
+    }
 }
-else {
-    echo "Connected successfully";
-}
+
+$forces = new Db('localhost', 'Adam', 'queseyo', 'forces');
+
+
 ?>
     <form action="index.php" method="post">
         <div class="form-group">
             <label for="player">Name:</label>
-            <input type="text" class="form-control" id="player" name="player">
+            <input type="text" class="form-control" id="player" name="player" required>
             <label for="attack">Attack:</label>
             <select class="form-control" id="attack" name="attack">
                 <option>1</option>
@@ -57,18 +92,9 @@ else {
             <button type="submit" class="btn btn-default">Submit</button>
         </div>
     </form>
-<?php $name = $_POST['player'];
-$attack = $_POST['attack'];
-$defense = $_POST['defense'];
-$stamina = $_POST['stamina'];
-
-$sql = "INSERT INTO players (Name, Attack, Defense, Stamina)
-VALUES ('$name', '$attack', '$defense', '$stamina')";
-
-if ($conn->query($sql) === TRUE) {
-    echo "New record created successfully";
-} else {
-    echo "Error: " . $sql . "<br>" . $conn->error;
+<?php
+if (isset($_POST['player'])) {
+$forces->db_insert_player();
 }
 ?>
 </body>
