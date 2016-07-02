@@ -11,62 +11,7 @@
 </head>
 <body>
 <?php
-class Db {
-
-    private $conn;
-
-    function __construct($par1, $par2, $par3, $par4)
-    {
-
-        $this->conn = new mysqli($par1, $par2, $par3, $par4);
-
-        if ($this->conn->connect_error) {?>
-            <script>
-                swal({   title: "Connection Failed",   text: "Refresh page to try again!",   type: "warning",   showCancelButton: true,   confirmButtonColor: "#DD6B55",   confirmButtonText: "Refresh page!",   closeOnConfirm: false }, function(){location.reload(); });
-            </script>
-            <?php
-        }
-        else {
-        }
-    }
-
-    function db_insert ($tableName, $columns, $values) {
-
-        $query = "INSERT INTO $tableName (";
-        foreach ($columns as $column){
-            $query .= " $column,";
-        }
-        $query = substr($query, 0, -1);
-        $query .= ")
-        VALUES (";
-
-        foreach ($values as $value) {
-            $query .= " '$value',";
-        }
-        $query = substr($query, 0, -1);
-
-        $query .= ")";
-
-        if ($this->conn->query($query) === TRUE) {?>
-                <script>
-                    var member = "<?php echo $values[0] ?>";
-                    var table = "<?php echo $tableName ?>";
-                    swal({   title: member + " was added to " + table,   text: "",   timer: 2000,   showConfirmButton: false });
-                </script>;
-            <?php
-        }
-        else {?>
-    <script>
-        var member = "<?php echo $values[0] ?>";
-        var table = "<?php echo $tableName ?>";
-        swal({   title: member + " was not added to " + table,   text: "try again",   timer: 2000,   showConfirmButton: false });
-    </script>;
-            <?php
-            echo "Error: " . $query . "<br>" . $this->conn->error;
-        }
-    }
-}
-
+include ('code/db_class.php');
 $forces = new Db('localhost', 'Adam', 'queseyo', 'forces');
 
 
@@ -104,7 +49,7 @@ $forces = new Db('localhost', 'Adam', 'queseyo', 'forces');
     </form>
 <?php
 if (isset($_POST['player'])) {
-$forces->db_insert('players', array('Name', 'Attack', 'Defense', 'Stamina'), array($_POST['player'], $_POST['attack'], $_POST['defense'], $_POST['stamina']));
+$forces->insert('players', array('Name' => $_POST['player'], 'Attack' => $_POST['attack'], 'Defense' => $_POST['defense'], 'Stamina' => $_POST['stamina']));
 }
 ?>
 </body>
