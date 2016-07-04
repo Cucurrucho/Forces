@@ -12,9 +12,37 @@
 <body>
 <?php
 include ('code/db_class.php');
-$forces = new Db('localhost', 'Adam', 'queseyo', 'forces');
-
-
+try {
+    $forces = new Db('localhost', 'Adam', 'queseyo', 'forces');
+}
+catch (Exception $e){
+    ?>
+    <script>
+        var errorMsg = "<?php echo $e->getMessage(); ?>";
+        swal({   title: "Connection Failed",   text: errorMsg,   type: "warning",   showCancelButton: true,   confirmButtonColor: "#DD6B55",   confirmButtonText: "Refresh page!",   closeOnConfirm: false }, function(){location.reload(); });
+    </script>
+    <?php
+}
+if (isset($_POST['player'])) {
+    try {
+        $forces->insert('players', array('Name' => $_POST['player'], 'Attack' => $_POST['attack'], 'Defense' => $_POST['defense'], 'Stamina' => $_POST['stamina']));
+        ?>
+        <script>
+            var member  = "<?php echo $_POST['player']; ?>";
+            swal({   title: member, text:"was added to players", type: "success",  timer: 2000,   showConfirmButton: false });
+        </script>
+        <?php
+    }
+    catch (Exception $e){
+        ?>
+        <script>
+            var errorMsg = "<?php echo $e->getMessage(); ?>";
+            var member  = "<?php echo $_POST['player']; ?>";
+            swal({   title: member + " could not be added",   text: errorMsg,   type: "error" });
+            </script>
+        <?php
+    }
+}
 ?>
     <form action="index.php" method="post">
         <div class="form-group">
@@ -47,10 +75,5 @@ $forces = new Db('localhost', 'Adam', 'queseyo', 'forces');
             <button type="submit" class="btn btn-default">Submit</button>
         </div>
     </form>
-<?php
-if (isset($_POST['player'])) {
-$forces->insert('players', array('Name' => $_POST['player'], 'Attack' => $_POST['attack'], 'Defense' => $_POST['defense'], 'Stamina' => $_POST['stamina']));
-}
-?>
 </body>
 </html>

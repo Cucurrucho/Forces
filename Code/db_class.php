@@ -3,23 +3,20 @@ class Db {
 
     private $conn;
 
-    function __construct($par1, $par2, $par3, $par4)
+    function __construct($serverName, $userName, $password, $dbName)
     {
 
-        $this->conn = new mysqli($par1, $par2, $par3, $par4);
+        $this->conn = new mysqli($serverName, $userName, $password, $dbName);
 
-        if ($this->conn->connect_error) {?>
-            <script>
-                swal({   title: "Connection Failed",   text: "Refresh page to try again!",   type: "warning",   showCancelButton: true,   confirmButtonColor: "#DD6B55",   confirmButtonText: "Refresh page!",   closeOnConfirm: false }, function(){location.reload(); });
-            </script>
-            <?php
+        if ($this->conn->connect_error) {
+            
+            throw new Exception ($this->conn->connect_error);
+
         }
         else {
         }
     }
-
     function insert ($tableName, $info) {
-
         $query = "INSERT INTO $tableName (";
         foreach ($info as $column => $value){
             $query .= " $column,";
@@ -35,22 +32,11 @@ class Db {
 
         $query .= ")";
 
-        if ($this->conn->query($query) === true) {?>
-            <script>
-                var member = "<?php echo $info[0] ?>";
-                var table = "<?php echo $tableName ?>";
-                swal({   title: member + " was added to " + table,   text: "",   timer: 2000,   showConfirmButton: false });
-            </script>;
-            <?php
+
+        if ($this->conn->query($query) === true){
         }
-        else {?>
-            <script>
-                var member = "<?php echo $info[0] ?>";
-                var table = "<?php echo $tableName ?>";
-                swal({   title: member + " was not added to " + table,   text: "try again",   timer: 2000,   showConfirmButton: false });
-            </script>;
-            <?php
-            echo "Error: " . $query . "<br>" . $this->conn->error;
+        else {
+            throw new Exception($this->conn->error);
         }
     }
 }
