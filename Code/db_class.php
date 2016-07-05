@@ -1,7 +1,10 @@
 <?php
 class Db {
 
-    private $conn;
+    protected $conn;
+    protected $selectVar;
+    protected $whereVar;
+    protected $tableVar;
 
     function __construct($serverName, $userName, $password, $dbName)
     {
@@ -13,11 +16,10 @@ class Db {
             throw new Exception ($this->conn->connect_error);
 
         }
-        else {
-        }
     }
-    function insert ($tableName, $info) {
-        $query = "INSERT INTO $tableName (";
+    function insert ($info) {
+        $query = "INSERT INTO " . $this->tableVar;
+        $query .= "(";
         foreach ($info as $column => $value){
             $query .= " $column,";
         }
@@ -33,11 +35,39 @@ class Db {
         $query .= ")";
 
 
-        if ($this->conn->query($query) === true){
-        }
-        else {
+        if (! $result = $this->conn->query($query) ){
+
             throw new Exception($this->conn->error);
         }
+        return $result;
     }
+
+    function select ($selector){
+        $query = "SELECT $selector FROM " . $this->tableVar;
+
+        $this->selectVar = $query;
+        return $this;
+    }
+
+    function where ($info){
+        $query = " WHERE ";
+        foreach ($info as $array) {
+            $query .=  "$array[0] $array[1] $array[2]";
+        }
+        $this->whereVar = $query;
+        return $this;
+    }
+    
+    function get () {
+        $query = $this->selectVar . " " . $this->whereVar;
+        return $this->conn->query($query);
+    }
+
+    function table ($tableName) {
+        $this->tableVar = $tableName;
+        return $this;
+    }
+
+
 }
 ?>
