@@ -9,11 +9,11 @@
     <script src="dist/sweetalert.min.js"></script> <link rel="stylesheet" type="text/css" href="dist/sweetalert.css">
     <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.css">
     <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.js"></script>
-    <title>Forces</title>
+    <title>Add Player</title>
 </head>
 <body>
 <?php
-include ('code/db_class.php');
+include('code/php/db_class.php');
 $forces = new Db('localhost', 'Adam', 'queseyo', 'forces');
 if (isset($_POST['player'])) {
     try {
@@ -31,7 +31,7 @@ if (isset($_POST['player'])) {
         ?>
         <script>
             var member  = "<?php echo $_POST['player']; ?>";
-            swal({   title: member, text:"was added to players", type: "success",  timer: 1000,   showConfirmButton: false });
+            swal({   title: member, text:"was added to players", type: "success",  timer: 1500,   showConfirmButton: false });
         </script>
         <?php
     }
@@ -46,7 +46,20 @@ if (isset($_POST['player'])) {
     }
 }
 ?>
-    <form action="index.php" method="post">
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Forces</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a href="index.html">Home</a></li>
+                <li class="active"><a href="addplayer.php">Add Player</a></li>
+                <li><a href="playerTable.php">Player Table</a></li>
+                <li><a href="editPlayer.php">Edit Player</a></li>
+            </ul>
+        </div>
+    </nav>
+    <form action="addplayer.php" method="post">
         <div class="form-group">
             <label for="player">Name:</label>
             <input type="text" class="form-control" id="player" name="player" required>
@@ -77,43 +90,5 @@ if (isset($_POST['player'])) {
             <button type="submit" class="btn btn-default">Submit</button>
         </div>
     </form>
-<div class="panel panel-default" width="80%">
-<table id="playersTable" class="display" cellspacing="0" width="100%">
-    <thead>
-    <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Attack</th>
-        <th>Defense</th>
-        <th>Stamina</th>
-    </tr>
-    </thead>
-    <tfoot>
-    <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Attack</th>
-        <th>Defense</th>
-        <th>Stamina</th>
-    </tr>
-    </tfoot>
-    <tbody>
-<?php
-    $result = $forces->table('players')->select('*')->get();
-     while ( $row = $result->fetch_array()){?>
-
-         <tr>
-             <td><?php echo $row['ID']?></td>
-             <td><?php echo $row['Name']?></td>
-             <td><?php echo $row['Attack']?></td>
-             <td><?php echo $row['Defense']?></td>
-             <td><?php echo $row['Stamina']?></td>
-
-         </tr>
-             <?php } ?>
-    </tbody>
-    <script src="Code/players-table.js"></script>
-</table>
-</div>
 </body>
 </html>
