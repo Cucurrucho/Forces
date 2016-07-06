@@ -70,8 +70,8 @@ $forces = new Db('localhost', 'Adam', 'queseyo', 'forces');
                                     <form action="editPlayer.php" method="post">
                                         <div class="form-group">
                                             <label for="Change">Change:</label>
-                                            <select class="form-control" name="<?php echo $row['Name'] . 'bla';?>">
-                                                <option>Attack</option>
+                                            <select class="form-control" name="<?php echo $row['Name'];?>">
+                                                <option>Attack</option
                                                 <option>Defense</option>
                                                 <option>Stamina</option>
                                             </select>
@@ -87,8 +87,8 @@ $forces = new Db('localhost', 'Adam', 'queseyo', 'forces');
                                         <button type="submit" class="btn btn-default">Submit</button>
                                         <?php
 
-                                        if (isset($_POST[$row['Name'] . 'bla'])) {
-                                                $forces->table('players')->edit(array(array($_POST[$row['Name'] . 'bla'], '=', $_POST[($row['Name'] . $row['ID'])])))->where('ID', '=', $row['ID']);
+                                        if (isset($_POST[$row['Name']])) {
+                                                $forces->table('players')->edit(array(array($_POST[$row['Name']], '=', $_POST[($row['Name'] . $row['ID'])])))->where('ID', '=', $row['ID']);
                                         }?>
                                         </form>
                                 </div>
