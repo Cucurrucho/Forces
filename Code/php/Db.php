@@ -5,8 +5,6 @@ class Db {
     protected $selectVar;
     protected $whereVar;
     protected $tableVar;
-    protected $andVar;
-    protected $orVar;
     protected $editVar;
 
     public function __construct($serverName, $userName, $password, $dbName)
@@ -59,8 +57,8 @@ class Db {
     }
     
     public function get () {
-        $query = $this->selectVar . " " . " " . $this->editVar . " " . $this->whereVar . " " . $this->andVar . " " . $this->orVar;
-        echo $query;
+        $query = $this->selectVar . " " . " " . $this->whereVar;
+        $this->whereVar = null;
         return $this->conn->query($query);
     }
 
@@ -71,25 +69,23 @@ class Db {
 
     public function andWhere ($column, $operator, $condition){
         $query = " AND $column $operator $condition";
-        $this->andVar = $query;
+        $this->whereVar .= $query;
         return $this;
     }
 
     public function orWhere ($column, $operator, $condition){
         $query = " OR $column $operator $condition";
-        $this->orVar = $query;
+        $this->whereVar .= $query;
         return $this;
     }
 
-    public function edit ($info) {
+    public function update ($info) {
         $query = "UPDATE " . $this->tableVar;
-        $query .= " SET";
-        foreach ($info as $array){
-            $query .= " $array[0] $array[1] $array[2],";
-        }
-        $query = substr($query, 0, -1);
-        $this->editVar = $query;
-        return $this;
+        $query .= " SET ";
+        $query .= $info;
+        $query .= $this->whereVar;
+        $this->whereVar = null;
+        return $this->conn->query($query);
 
     }
 }

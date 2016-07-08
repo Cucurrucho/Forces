@@ -27,7 +27,7 @@
         </div>
     </nav>
 <?php
-include('code/php/db_class.php');
+include('code/php/Db.php');
 $forces = new Db('localhost', 'Adam', 'queseyo', 'forces');
 ?>
 <div class="container-fluid">

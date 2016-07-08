@@ -9,7 +9,8 @@
     <script src="dist/sweetalert.min.js"></script> <link rel="stylesheet" type="text/css" href="dist/sweetalert.css">
     <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.css">
     <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.js"></script>
-    <title>Player Table</title>
+    <script src="Code/js/edit-player.js"></script>
+    <title>Edit Player</title>
 </head>
 <body>
 <nav class="navbar navbar-inverse">
@@ -26,8 +27,17 @@
     </div>
 </nav>
 <?php
-include('code/php/db_class.php');
+include('code/php/Db.php');
 $forces = new Db('localhost', 'Adam', 'queseyo', 'forces');
+if (isset($_POST['change'])){
+    $edito = $_POST['change'] . "=";
+    $edito .= $_POST['defense'];
+    $forces->table('players')->where('ID', '=', $_POST['playerID'])->update($edito);
+}
+if (isset($_POST['changeName'])) {
+    $newName = "'" . $_POST['changeName'] . "'";
+    $forces->table('players')->where('ID', '=', $_POST['playerID'])->update("Name=" . $newName);
+}
 ?>
 <div class="container-fluid">
     <div class="panel panel-default" width="100%">
@@ -55,61 +65,67 @@ $forces = new Db('localhost', 'Adam', 'queseyo', 'forces');
             <tbody>
             <?php
             $result = $forces->table('players')->select('*')->get();
-            while ( $row = $result->fetch_array()){?>
+            while ( $row = $result->fetch_array()){ ?>
 
                 <tr>
-                    <th><button type="button" class="btn btn-info" data-toggle="modal" data-target="#<?php echo $row['Name']?>">Edit Player</button></th>
-                    <div class="modal fade" id="<?php echo $row['Name']?>" role="dialog">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    <h4 class="modal-title">Editor</h4>
-                                </div>
-                                <div class="modal-body">
-                                    <form action="editPlayer.php" method="post">
-                                        <div class="form-group">
-                                            <label for="Change">Change:</label>
-                                            <select class="form-control" name="<?php echo $row['Name'];?>">
-                                                <option>Attack</option
-                                                <option>Defense</option>
-                                                <option>Stamina</option>
-                                            </select>
-                                            <label for="Set">Set to</label>
-                                            <select class="form-control" name="<?php echo ($row['Name'] . $row['ID']); ?>">
-                                                <option>1</option>
-                                                <option>2</option>
-                                                <option>3</option>
-                                                <option>4</option>
-                                                <option>5</option>
-                                            </select>
-                                        </div>
-                                        <button type="submit" class="btn btn-default">Submit</button>
-                                        <?php
-
-                                        if (isset($_POST[$row['Name']])) {
-                                                $forces->table('players')->edit(array(array($_POST[$row['Name']], '=', $_POST[($row['Name'] . $row['ID'])])))->where('ID', '=', $row['ID']);
-                                        }?>
-                                        </form>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    <td><button type="button" class="btn btn-info" data-toggle="modal" data-target="#editor" onclick="passID(<?php echo $row['ID'] ?>)">Edit Player</button></td>
                     <td><?php echo $row['ID']?></td>
                     <td><?php echo $row['Name']?></td>
                     <td><?php echo $row['Attack']?></td>
                     <td><?php echo $row['Defense']?></td>
                     <td><?php echo $row['Stamina']?></td>
                 </tr>
-
-            <?php } ?>
+            <?php
+            }
+            ?>
             </tbody>
             <script src="Code/js/players-table.js"></script>
         </table>
     </div>
+    <!-- Modal -->
+    <div class="modal fade" id="editor" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Editor</h4>
+                </div>
+                <div class="modal-body">
+                    <form action="editPlayer.php" method="post">
+                        <div class="form-group">
+                            <label for="change">Attack:</label>
+                            <select class="form-control" id="change" name="change">
+                                <option>Attack</option>
+                                <option>Defense</option>
+                                <option>Stamina</option>
+                            </select>
+                            <label for="defense">To:</label>
+                            <select class="form-control" id="defense" name="defense" style="margin-bottom: 10px">
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                            </select>
+                            <input type="hidden" name="playerID" id="playerID">
+                            <button type="submit" class="btn btn-default">Submit</button>
+                        </div>
+                    </form>
+                    <form action="editPlayer.php" method="post">
+                        <div class="form-group">
+                            <label for="changeName">Change Name</label>
+                            <input type="text" class="form-control" id="changeName" name="changeName" style="margin-bottom: 10px" <?php if (isset($_POST['changeName'])) { echo "required"; } ?>>
+                            <input type="hidden" name="playerID" id="playerID1">
+                            <button type="submit" class="btn btn-default">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+<?php
+
+?>
 </body>
 </html>
