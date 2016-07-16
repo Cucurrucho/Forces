@@ -5,8 +5,9 @@ class Db {
     protected $selectVar;
     protected $whereVar;
     protected $tableVar;
+    protected $editVar;
 
-    function __construct($serverName, $userName, $password, $dbName)
+    public function __construct($serverName, $userName, $password, $dbName)
     {
 
         $this->conn = new mysqli($serverName, $userName, $password, $dbName);
@@ -17,7 +18,7 @@ class Db {
 
         }
     }
-    function insert ($info) {
+    public function insert ($info) {
         $query = "INSERT INTO " . $this->tableVar;
         $query .= "(";
         foreach ($info as $column => $value){
@@ -42,32 +43,50 @@ class Db {
         return $result;
     }
 
-    function select ($selector){
+    public function select ($selector){
         $query = "SELECT $selector FROM " . $this->tableVar;
 
         $this->selectVar = $query;
         return $this;
     }
 
-    function where ($info){
-        $query = " WHERE ";
-        foreach ($info as $array) {
-            $query .=  "$array[0] $array[1] $array[2]";
-        }
+    public function where ($column, $operator, $condition){
+        $query = " WHERE $column $operator $condition";
         $this->whereVar = $query;
         return $this;
     }
     
-    function get () {
-        $query = $this->selectVar . " " . $this->whereVar;
+    public function get () {
+        $query = $this->selectVar . " " . " " . $this->whereVar;
+        $this->whereVar = null;
         return $this->conn->query($query);
     }
 
-    function table ($tableName) {
+    public function table ($tableName) {
         $this->tableVar = $tableName;
         return $this;
     }
 
+    public function andWhere ($column, $operator, $condition){
+        $query = " AND $column $operator $condition";
+        $this->whereVar .= $query;
+        return $this;
+    }
 
+    public function orWhere ($column, $operator, $condition){
+        $query = " OR $column $operator $condition";
+        $this->whereVar .= $query;
+        return $this;
+    }
+
+    public function update ($info) {
+        $query = "UPDATE " . $this->tableVar;
+        $query .= " SET ";
+        $query .= $info;
+        $query .= $this->whereVar;
+        $this->whereVar = null;
+        return $this->conn->query($query);
+
+    }
 }
 ?>
