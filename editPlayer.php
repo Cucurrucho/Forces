@@ -21,7 +21,7 @@
         <ul class="nav navbar-nav">
             <li><a href="index.html">Home</a></li>
             <li><a href="addplayer.php">Add Player</a></li>
-            <li><a href="playerTable.php">Player Table</a></li>
+            <li><a href="makeTeam.php">Make a Team</a></li>
             <li class="active"><a href="editPlayer.php">Edit Player</a></li>
         </ul>
     </div>
@@ -29,15 +29,17 @@
 <?php
 include('code/php/Db.php');
 $forces = new Db('localhost', 'Adam', 'queseyo', 'forces');
-if (isset($_POST['change'])){
-    $edito = $_POST['change'] . "=";
-    $edito .= $_POST['defense'];
-    $forces->table('players')->where('ID', '=', $_POST['playerID'])->update($edito);
+if (isset($_POST['player'])){
+    $edito = "Name='";
+    $edito .=  $_POST['player'] . "',Attack=" . $_POST['attack'] . ",Defense=" . $_POST['defense'] . ",Stamina=" . $_POST['stamina'];
+    $forces->table('players')->where('ID', '=', $_POST['ID'])->update($edito);
 }
-if (isset($_POST['changeName'])) {
-    $newName = "'" . $_POST['changeName'] . "'";
-    $forces->table('players')->where('ID', '=', $_POST['playerID'])->update("Name=" . $newName);
+
+function getPlayer ($player_array){
+    $playerData = $player_array['ID'] . ", '". $player_array['Name'] . "', " .  $player_array['Attack'] . ", " . $player_array['Defense'] . ", ". $player_array['Stamina'];
+    echo $playerData;
 }
+
 ?>
 <div class="container-fluid">
     <div class="panel panel-default" width="100%">
@@ -68,12 +70,13 @@ if (isset($_POST['changeName'])) {
             while ( $row = $result->fetch_array()){ ?>
 
                 <tr>
-                    <td><button type="button" class="btn btn-info" data-toggle="modal" data-target="#editor" onclick="passID(<?php echo $row['ID'] ?>)">Edit Player</button></td>
+                    <td><button type="button" class="btn btn-info" data-toggle="modal" data-target="#editor" onclick="passPlayer(<?php getPlayer($row) ?>)">Edit Player</button></td>
                     <td><?php echo $row['ID']?></td>
                     <td><?php echo $row['Name']?></td>
                     <td><?php echo $row['Attack']?></td>
                     <td><?php echo $row['Defense']?></td>
                     <td><?php echo $row['Stamina']?></td>
+                    <td><?php getPlayer($row) ?></td>
                 </tr>
             <?php
             }
@@ -93,29 +96,33 @@ if (isset($_POST['changeName'])) {
                 <div class="modal-body">
                     <form action="editPlayer.php" method="post">
                         <div class="form-group">
-                            <label for="change">Attack:</label>
-                            <select class="form-control" id="change" name="change">
-                                <option>Attack</option>
-                                <option>Defense</option>
-                                <option>Stamina</option>
-                            </select>
-                            <label for="defense">To:</label>
-                            <select class="form-control" id="defense" name="defense" style="margin-bottom: 10px">
+                            <label for="player">Name:</label>
+                            <input type="text" class="form-control" id="player" name="player" required>
+                            <label for="attack">Attack:</label>
+                            <select class="form-control" id="attack" name="attack">
                                 <option>1</option>
                                 <option>2</option>
                                 <option>3</option>
                                 <option>4</option>
                                 <option>5</option>
                             </select>
-                            <input type="hidden" name="playerID" id="playerID">
-                            <button type="submit" class="btn btn-default">Submit</button>
-                        </div>
-                    </form>
-                    <form action="editPlayer.php" method="post">
-                        <div class="form-group">
-                            <label for="changeName">Change Name</label>
-                            <input type="text" class="form-control" id="changeName" name="changeName" style="margin-bottom: 10px" <?php if (isset($_POST['changeName'])) { echo "required"; } ?>>
-                            <input type="hidden" name="playerID" id="playerID1">
+                            <label for="defense">Defense:</label>
+                            <select class="form-control" id="defense" name="defense">
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                            </select>
+                            <label for="stamina">Stamina:</label>
+                            <select class="form-control" id="stamina" name="stamina">
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                            </select>
+                            <input type="hidden" id="ID" name="ID">
                             <button type="submit" class="btn btn-default">Submit</button>
                         </div>
                     </form>
@@ -124,8 +131,5 @@ if (isset($_POST['changeName'])) {
         </div>
     </div>
 </div>
-<?php
-
-?>
 </body>
 </html>
