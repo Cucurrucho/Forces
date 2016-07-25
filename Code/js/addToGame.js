@@ -1,5 +1,5 @@
 function addToGame(playerID, name) {
-    $('#game').append("<option value='" + playerID + "' class='" + playerID + "' >" + name + "</option>");
+    $('#game').append("<option value='" + playerID + "'>" + name + "</option>");
 }
 
 function enable(ID) {

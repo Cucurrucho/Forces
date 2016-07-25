@@ -1,38 +1,22 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-    <script src="dist/sweetalert.min.js"></script> <link rel="stylesheet" type="text/css" href="dist/sweetalert.css">
-    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.css">
-    <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.js"></script>
-    <script src="Code/js/edit-player.js"></script>
-    <title>Edit Player</title>
-</head>
-<body>
-<nav class="navbar navbar-inverse">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="#">Forces</a>
-        </div>
-        <ul class="nav navbar-nav">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="addplayer.php">Add Player</a></li>
-            <li><a href="makeTeam.php">Make a Team</a></li>
-            <li class="active"><a href="editPlayer.php">Edit Player</a></li>
-        </ul>
-    </div>
-</nav>
-<?php
+<?php include('navbar.php'); ?>
+<script>$(document).prop('title', 'Edit Player');</script>
+<?php 
 include('code/php/Db.php');
 $forces = new Db('localhost', 'Adam', 'queseyo', 'forces');
 if (isset($_POST['player'])){
     $edito = "Name='";
     $edito .=  $_POST['player'] . "',Attack=" . $_POST['attack'] . ",Defense=" . $_POST['defense'] . ",Stamina=" . $_POST['stamina'];
-    $forces->table('players')->where('ID', '=', $_POST['ID'])->update($edito);
+    try {
+        $forces->table('players')->where('ID', '=', $_POST['ID'])->update($edito);
+    }
+    catch (Exception $e){
+        ?>
+        <script>
+            var errorMsg = "<?php echo $e->getMessage(); ?>";
+            swal({   title: "Editing player failed",   text: errorMsg,   type: "warning",   showCancelButton: true,   confirmButtonColor: "#DD6B55",   confirmButtonText: "contact us!",   closeOnConfirm: false });
+        </script>
+        <?php
+    }
 }
 
 function getPlayer ($player_array){
@@ -76,13 +60,12 @@ function getPlayer ($player_array){
                     <td><?php echo $row['Attack']?></td>
                     <td><?php echo $row['Defense']?></td>
                     <td><?php echo $row['Stamina']?></td>
-                    <td><?php getPlayer($row) ?></td>
                 </tr>
             <?php
             }
             ?>
             </tbody>
-            <script src="Code/js/players-table.js"></script>
+            <script src="Code/js/playersTable.js"></script>
         </table>
     </div>
     <!-- Modal -->
