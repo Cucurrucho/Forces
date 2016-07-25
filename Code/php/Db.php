@@ -59,7 +59,11 @@ class Db {
     public function get () {
         $query = $this->selectVar . " " . " " . $this->whereVar;
         $this->whereVar = null;
-        return $this->conn->query($query);
+        if (! $result = $this->conn->query($query) ){
+
+            throw new Exception($this->conn->error);
+        }
+        return $result;
     }
 
     public function table ($tableName) {
@@ -85,7 +89,11 @@ class Db {
         $query .= $info;
         $query .= $this->whereVar;
         $this->whereVar = null;
-        return $this->conn->query($query);
+        if (! $result = $this->conn->query($query) ){
+
+            throw new Exception($this->conn->error);
+        }
+        return $result;
     }
 }
 ?>
