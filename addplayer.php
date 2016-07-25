@@ -54,7 +54,7 @@ if (isset($_POST['player'])) {
             <ul class="nav navbar-nav">
                 <li><a href="index.html">Home</a></li>
                 <li class="active"><a href="addplayer.php">Add Player</a></li>
-                <li><a href="playerTable.php">Player Table</a></li>
+                <li><a href="makeTeam.php">Make a Team</a></li>
                 <li><a href="editPlayer.php">Edit Player</a></li>
             </ul>
         </div>

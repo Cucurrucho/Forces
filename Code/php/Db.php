@@ -86,7 +86,6 @@ class Db {
         $query .= $this->whereVar;
         $this->whereVar = null;
         return $this->conn->query($query);
-
     }
 }
 ?>
