@@ -14,6 +14,7 @@
     <script src="Code/js/selectAll.js"></script>
     <script src="Code/js/teamValidation.js"></script>
     <script src="Code/js/editPlayer.js"></script>
+    <link rel="stylesheet" href="Code/css/stylesheet.css">
     <title></title>
 </head>
 <body>

@@ -88,12 +88,63 @@ if (isset($_POST['game'])) {
     foreach ($teamsA as $team) {
         $matchups[] = matchMaker($team,$teamsB);
     }
+    $i = 0;
     usort($matchups,"cmp");
-    $topMathc = array_slice($matchups,0,1);
-    unset($topMathc['rating']);
-    $teamA = $topMathc[0];
-    var_dump($teamA);
-}
+    foreach ($matchups as $matchup) {
+        unset($matchup['rating']);
+        $matchups[$i] = $matchup;
+        $i++;
+    }
+    $matches = array_slice($matchups,0,10,true); ?>
+    <div class="panel panel-default" style="margin: 2%;">
+<div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="false" style="background: lightblue">
+    <ol class="carousel-indicators" align="center" style="margin-top: 70%">
+        <li data-target="#myCarousel" data-slide-to="0"></li>
+        <li data-target="#myCarousel" data-slide-to="1"></li>
+        <li data-target="#myCarousel" data-slide-to="2"></li>
+        <li data-target="#myCarousel" data-slide-to="3"></li>
+        <li data-target="#myCarousel" data-slide-to="4"></li>
+        <li data-target="#myCarousel" data-slide-to="5"></li>
+        <li data-target="#myCarousel" data-slide-to="6"></li>
+        <li data-target="#myCarousel" data-slide-to="7"></li>
+        <li data-target="#myCarousel" data-slide-to="8"></li>
+        <li data-target="#myCarousel" data-slide-to="9"></li>
+    </ol>
+    <div class="carousel-inner" role="listbox">
+        <?php foreach ($matches as $match) {
+            $teamA = $match[0];
+            $teamB = $match [1];
+            ?> <div class="item <?php if ($match === $matches[0]) { echo "active";} ?>" align="center">
+                <ul class="col-lg-5">
+                    <?php foreach ($teamA as $player){
+                        ?> <li>
+                        <?php echo $player->name; ?>
+                    </li>
+                   <?php } ?>
+                </ul>
+                <p class="col-lg-1">VS</p>
+                <ul class="col-lg-5">
+                    <?php foreach ($teamB as $player){
+                        ?> <li>
+                            <?php echo $player->name; ?>
+                        </li>
+                    <?php } ?>
+                </ul>
+        </div>
+      <?php  } ?>
+    </div>
+    <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+    </div>
+<?php
+ }
 ?>
 </body>
 </html>
