@@ -14,10 +14,5 @@ class Player {
         $this->stamina = $pStamina;
         $this->id = $pId;
     }
-    
-    function getProperty ($property) {
-        $result = $this->$property;
-        return $result;
-    }
 }
 ?>
